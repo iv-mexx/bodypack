@@ -6,10 +6,9 @@ defmodule BodyPack.Application do
   use Application
 
   @impl true
-  def start(_type, _args) do
+  def start(_type, args) do
     children = [
-      # Starts a worker by calling: BodyPack.Worker.start_link(arg)
-      # {BodyPack.Worker, arg}
+      {BodyPack.Listener, args}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

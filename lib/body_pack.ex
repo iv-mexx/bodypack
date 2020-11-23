@@ -2,7 +2,6 @@ defmodule BodyPack do
   @moduledoc """
   Documentation for `BodyPack`.
   """
-
   @doc """
   Hello world.
 
