@@ -6,11 +6,11 @@ defmodule BodyPack.Listener do
 
   require Logger
 
-  def start_link(options \\ []) do
+  def start_link(_options) do
     GenStage.start_link(__MODULE__, :ok)
   end
 
-  def init(options) do
+  def init(_) do
     {:consumer, :ok, subscribe_to: [ExOsc.MessageBuffer]}
   end
 
