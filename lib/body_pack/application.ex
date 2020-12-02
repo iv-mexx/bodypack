@@ -8,7 +8,8 @@ defmodule BodyPack.Application do
   @impl true
   def start(_type, args) do
     children = [
-      {BodyPack.Listener, args}
+      {BodyPack.Listener, args},
+      {BodyPack.Ws2812Client, args},
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

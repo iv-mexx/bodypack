@@ -16,7 +16,7 @@ defmodule BodyPack.Listener do
 
   def handle_events(events, _from, state) do
     for event <- events do
-      Logger.info("Listener: #{inspect(event)}")
+      # Logger.info("Listener: #{inspect(event)}")
     end
 
     {:noreply, [], state}
