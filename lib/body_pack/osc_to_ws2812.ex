@@ -21,7 +21,7 @@ defmodule BodyPack.OscToWs2812 do
     brightness = floor(brightness * @max_value)
 
     # for event <- events do
-    Logger.info("Brightness: #{brightness}")
+    # Logger.info("Brightness: #{brightness}")
     # end
 
     message = "brightness 1,#{brightness};"
