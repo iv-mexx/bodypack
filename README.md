@@ -19,3 +19,10 @@ Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_do
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at [https://hexdocs.pm/bodypack](https://hexdocs.pm/bodypack).
 
+
+
+### Setup Elixir Application as Service
+
+https://dev.to/seojeek/phoenix-deploys-with-elixir-1-9-with-systemd-no-docker-1od0
+
+* systemctl enable wap.service
