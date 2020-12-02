@@ -10,6 +10,9 @@ defmodule BodyPack.Ws2812Client do
   setup 1,16,3;
   init;
   do; fill 1,ff0000; render; delay 25; fill 1,000000; render; delay 50; loop 3;
+  fill 1,ff0000;
+  brightness 1,0;
+  render;
   """
 
   def start_link(options \\ []) do
@@ -21,7 +24,7 @@ defmodule BodyPack.Ws2812Client do
   def init(%{ip: ip, port: port}) do
     {:ok, socket} = :gen_tcp.connect(ip, port, [:binary])
     :ok = :gen_tcp.send(socket, @startup_sequence)
-    {:consumer, socket, subscribe_to: [ExOsc.MessageBuffer]}
+    {:consumer, socket, subscribe_to: [BodyPack.OscToWs2812]}
   end
 
   def send_message(message, timeout \\ 5000) do
@@ -33,11 +36,12 @@ defmodule BodyPack.Ws2812Client do
     {:reply, :ok, [], socket}
   end
 
-  def handle_events(events, _from, state) do
-    for event <- events do
-      Logger.info("WS2812Client: #{inspect(event)}")
-    end
+  def handle_events(messages, _from, socket) do
+    message = Enum.join(messages, "") <> "render;"
+    Logger.info("WS2812Client: `#{message}`")
 
-    {:noreply, [], state}
+    :ok = :gen_tcp.send(socket, message)
+
+    {:noreply, [], socket}
   end
 end

@@ -9,6 +9,7 @@ defmodule BodyPack.Application do
   def start(_type, args) do
     children = [
       {BodyPack.Listener, args},
+      {BodyPack.OscToWs2812, args},
       {BodyPack.Ws2812Client, args},
     ]
 
