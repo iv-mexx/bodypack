@@ -7,9 +7,10 @@ defmodule BodyPack.Ws2812Client do
 
   @startup_sequence """
   reset;
-  setup 1,16,3;
+  setup 1,32,3;
   init;
-  do; fill 1,ff0000; render; delay 25; fill 1,000000; render; delay 50; loop 3;
+  brightness 1,15;
+  do; fill 1,ff0000; render; delay 25; fill 1,000000; render; delay 150; loop 3;
   fill 1,ff0000;
   brightness 1,0;
   render;
