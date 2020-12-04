@@ -47,10 +47,5 @@ defmodule BodyPack.OscToWs2812 do
     %DockerState{ state | blue: floor(blue * @max_value)}
   end
 
-  defp handle_osc_message(msg, state) do
-    IO.puts "Unmatched message"
-    IO.inspect msg
-    IO.puts "-----"
-    state
-  end
+  defp handle_osc_message(_, state), do: state
 end
