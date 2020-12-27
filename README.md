@@ -1,28 +1,15 @@
 # BodyPack
 
-**TODO: Add description**
+An Elixir application that receives OSC messages and controls WS2812-style LEDs on a Raspberry Pi.
+
+## Disclaimer
+
+Currently, this is just a proof of concept with hardcoded configuration and no proper customisation story yet.
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `bodypack` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:bodypack, "~> 0.1.0"}
-  ]
-end
-```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/bodypack](https://hexdocs.pm/bodypack).
-
-
+On a RaspberryPi, follow [the installation steps](./doc/elixir_server.md).
 
 ### Setup Elixir Application as Service
 
 https://dev.to/seojeek/phoenix-deploys-with-elixir-1-9-with-systemd-no-docker-1od0
-
-* systemctl enable wap.service
