@@ -2,7 +2,7 @@ defmodule BodyPack.Ws2812Client do
   use GenStage
   require Logger
 
-  @default_ws2812srv_ip '192.168.1.149'
+  @default_ws2812srv_ip '127.0.0.1'
   @default_ws2812srv_port 9999
 
   @startup_sequence """
@@ -12,7 +12,7 @@ defmodule BodyPack.Ws2812Client do
   brightness 1,15;
   do; fill 1,ff0000; render; delay 25; fill 1,000000; render; delay 150; loop 3;
   fill 1,ff0000;
-  brightness 1,0;
+  brightness 1,15;
   render;
   """
 
