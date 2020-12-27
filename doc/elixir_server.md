@@ -12,7 +12,7 @@ This has to run on the Raspberry Pi.
 ### Setup Ws2812-Server
 
 1. It is included as a submodule, so `git submodule init && git submodule update`
-1. Follow the Steps in [rpi-ws2812-server.md](./ws-2812-server.md)
+1. Follow the Steps in [rpi-ws2812-server.md](./rpi-ws2812-server.md)
 
 ## Setup Bodypack
 
