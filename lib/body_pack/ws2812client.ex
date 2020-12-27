@@ -12,7 +12,7 @@ defmodule BodyPack.Ws2812Client do
   brightness 1,15;
   do; fill 1,ff0000; render; delay 25; fill 1,000000; render; delay 150; loop 3;
   fill 1,ff0000;
-  brightness 1,15;
+  brightness 1,0;
   render;
   """
 
