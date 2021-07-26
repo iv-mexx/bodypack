@@ -55,7 +55,9 @@ defmodule BodyPack.OscToWs2812 do
 
   defp ws2812messages_for_state(%{program: 0} = state) do
     [
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)}; brightness 1,#{state.brightness};"
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)};",
+      "brightness 1,#{state.brightness};",
+      "render;"
     ]
   end
 
