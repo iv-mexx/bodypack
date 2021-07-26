@@ -1,5 +1,5 @@
 defmodule DockerState do
-  defstruct brightness: 0, red: 0, green: 0, blue: 0, bpm: 0, program: 0
+  defstruct brightness: 0, red: 0, green: 0, blue: 0, bpm: 0, program: 0, step: 0
 end
 
 defmodule BodyPack.OscToWs2812 do
@@ -17,8 +17,13 @@ defmodule BodyPack.OscToWs2812 do
   end
 
   def handle_events(events, _from, state) do
+    previous_step = state.step
     state = Enum.reduce(events, state, fn event, acc -> handle_osc_message(event, acc) end)
-    {:noreply, ws2812messages_for_state(state), state}
+
+    IO.inspect(state)
+    IO.inspect(ws2812messages_for_state(state, previous_step))
+
+    {:noreply, ws2812messages_for_state(state, previous_step), state}
   end
 
   defp format_color(color) do
@@ -44,7 +49,11 @@ defmodule BodyPack.OscToWs2812 do
   end
 
   defp handle_osc_message({{"/docker/program", [osc_float: program]}}, state) do
-    %DockerState{state | program: floor(program * 127)}
+    %DockerState{state | program: round(program * 127)}
+  end
+
+  defp handle_osc_message({{"/docker/step", [osc_float: step]}}, state) do
+    %DockerState{state | step: round(step * 127)}
   end
 
   defp handle_osc_message({{"/global/bpm", [osc_float: bpm]}}, state) do
@@ -53,7 +62,7 @@ defmodule BodyPack.OscToWs2812 do
 
   defp handle_osc_message(_, state), do: state
 
-  defp ws2812messages_for_state(%{program: 0} = state) do
+  defp ws2812messages_for_state(%{program: 0} = state, _) do
     [
       "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)};",
       "brightness 1,#{state.brightness};",
@@ -61,13 +70,68 @@ defmodule BodyPack.OscToWs2812 do
     ]
   end
 
-  defp ws2812messages_for_state(%{program: 1} = state) do
+  # Program 1 = Rainbow BOTH
+  defp ws2812messages_for_state(%{program: 1, step: 0} = state, _) do
     [
       "rainbow 1,2;",
       "brightness 1,#{state.brightness};",
-      "do; rotate 1; render; delay 25; loop 150;"
+      "render;"
     ]
   end
 
-  defp ws2812messages_for_state(_), do: []
+  defp ws2812messages_for_state(%{program: 1, step: step}, previous_step) when step > previous_step do
+    [
+      "rotate 1;",
+      "render;"
+    ]
+  end
+
+  # Program 2 = Rainbow LEFT
+  defp ws2812messages_for_state(%{program: 2, step: 0} = state, _) do
+    [
+      "fill 1,000000;",
+      "rainbow 1,2,0,255,1,16;",
+      "brightness 1,#{state.brightness};",
+      "render;"
+    ]
+  end
+
+  defp ws2812messages_for_state(%{program: 2, step: step}, previous_step) when step > previous_step do
+    [
+      "rotate 1;",
+      "render;"
+    ]
+  end
+
+  # Program 3 = Random BOTH
+  defp ws2812messages_for_state(%{program: 3, step: step} = state, previous_step) when step != previous_step do
+    [
+      "fill 1,000000;",
+      "random 1,0,32,RGB;",
+      "brightness 1,#{state.brightness};",
+      "render;"
+    ]
+  end
+
+  # Program 4 = Random LEFT
+  defp ws2812messages_for_state(%{program: 4, step: step} = state, previous_step) when step != previous_step do
+    [
+      "fill 1,000000;",
+      "random 1,0,16,RGB;",
+      "brightness 1,#{state.brightness};",
+      "render;"
+    ]
+  end
+
+  # Program 5 = Random RIGHT
+  defp ws2812messages_for_state(%{program: 5, step: step} = state, previous_step) when step != previous_step do
+    [
+      "fill 1,000000;",
+      "random 1,16,16,RGB;",
+      "brightness 1,#{state.brightness};",
+      "render;"
+    ]
+  end
+
+  defp ws2812messages_for_state(_, _), do: []
 end
