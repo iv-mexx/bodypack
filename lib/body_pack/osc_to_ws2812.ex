@@ -17,10 +17,12 @@ defmodule BodyPack.OscToWs2812 do
   end
 
   def handle_events(events, _from, state) do
-    state = Enum.reduce(events, state, fn event, acc -> handle_osc_message(event, acc) end )
-    message = "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)}; brightness 1,#{state.brightness};"
+    state = Enum.reduce(events, state, fn event, acc -> handle_osc_message(event, acc) end)
 
-    IO.puts message
+    message =
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)}; brightness 1,#{state.brightness};"
+
+    IO.puts(message)
 
     {:noreply, [message], state}
   end
@@ -32,19 +34,19 @@ defmodule BodyPack.OscToWs2812 do
   end
 
   defp handle_osc_message({{"/docker/eyes/brightness", [osc_float: brightness]}}, state) do
-    %DockerState{ state | brightness: floor(brightness * @max_value)}
+    %DockerState{state | brightness: floor(brightness * @max_value)}
   end
 
   defp handle_osc_message({{"/docker/eyes/red", [osc_float: red]}}, state) do
-    %DockerState{ state | red: floor(red * @max_value)}
+    %DockerState{state | red: floor(red * @max_value)}
   end
 
   defp handle_osc_message({{"/docker/eyes/green", [osc_float: green]}}, state) do
-    %DockerState{ state | green: floor(green * @max_value)}
+    %DockerState{state | green: floor(green * @max_value)}
   end
 
   defp handle_osc_message({{"/docker/eyes/blue", [osc_float: blue]}}, state) do
-    %DockerState{ state | blue: floor(blue * @max_value)}
+    %DockerState{state | blue: floor(blue * @max_value)}
   end
 
   defp handle_osc_message(_, state), do: state

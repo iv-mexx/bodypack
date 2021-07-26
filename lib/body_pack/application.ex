@@ -10,7 +10,7 @@ defmodule BodyPack.Application do
     children = [
       # {BodyPack.Listener, args},
       {BodyPack.OscToWs2812, args},
-      {BodyPack.Ws2812Client, args},
+      {BodyPack.Ws2812Client, args}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
