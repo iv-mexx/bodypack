@@ -1,5 +1,5 @@
 defmodule DockerState do
-  defstruct brightness: 0, red: 0, green: 0, blue: 0
+  defstruct brightness: 0, red: 0, green: 0, blue: 0, bpm: 0, program: 0
 end
 
 defmodule BodyPack.OscToWs2812 do
@@ -18,13 +18,7 @@ defmodule BodyPack.OscToWs2812 do
 
   def handle_events(events, _from, state) do
     state = Enum.reduce(events, state, fn event, acc -> handle_osc_message(event, acc) end)
-
-    message =
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)}; brightness 1,#{state.brightness};"
-
-    IO.puts(message)
-
-    {:noreply, [message], state}
+    {:noreply, ws2812messages_for_state(state), state}
   end
 
   defp format_color(color) do
@@ -49,5 +43,28 @@ defmodule BodyPack.OscToWs2812 do
     %DockerState{state | blue: floor(blue * @max_value)}
   end
 
+  defp handle_osc_message({{"/docker/program", [osc_int: program]}}, state) do
+    %DockerState{state | program: program}
+  end
+
+  defp handle_osc_message({{"/global/bpm", [osc_float: bpm]}}, state) do
+    %DockerState{state | bpm: floor(bpm * @max_value)}
+  end
+
   defp handle_osc_message(_, state), do: state
+
+  defp ws2812messages_for_state(%{program: 0} = state) do
+    [
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)}; brightness 1,#{state.brightness};"
+    ]
+  end
+
+  defp ws2812messages_for_state(%{program: 1}) do
+    [
+      "rainbow 1,2;",
+      "do; rotate 1; render; delay 25; loop 150;"
+    ]
+  end
+
+  defp ws2812messages_for_state(_), do: []
 end
