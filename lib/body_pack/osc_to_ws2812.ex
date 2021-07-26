@@ -44,7 +44,7 @@ defmodule BodyPack.OscToWs2812 do
   end
 
   defp handle_osc_message({{"/docker/program", [osc_float: program]}}, state) do
-    %DockerState{state | program: floor(bpm * 127)}
+    %DockerState{state | program: floor(program * 127)}
   end
 
   defp handle_osc_message({{"/global/bpm", [osc_float: bpm]}}, state) do
