@@ -43,8 +43,8 @@ defmodule BodyPack.OscToWs2812 do
     %DockerState{state | blue: floor(blue * @max_value)}
   end
 
-  defp handle_osc_message({{"/docker/program", [osc_int: program]}}, state) do
-    %DockerState{state | program: program}
+  defp handle_osc_message({{"/docker/program", [osc_float: program]}}, state) do
+    %DockerState{state | program: floor(bpm * 127)}
   end
 
   defp handle_osc_message({{"/global/bpm", [osc_float: bpm]}}, state) do
@@ -61,9 +61,10 @@ defmodule BodyPack.OscToWs2812 do
     ]
   end
 
-  defp ws2812messages_for_state(%{program: 1}) do
+  defp ws2812messages_for_state(%{program: 1} = state) do
     [
       "rainbow 1,2;",
+      "brightness 1,#{state.brightness};",
       "do; rotate 1; render; delay 25; loop 150;"
     ]
   end
