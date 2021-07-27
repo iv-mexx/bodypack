@@ -21,7 +21,7 @@ defmodule BodyPack.OscToWs2812 do
     state = Enum.reduce(events, state, fn event, acc -> handle_osc_message(event, acc) end)
 
     IO.inspect(state)
-    IO.inspect(ws2812messages_for_state(state, previous_step))
+    # IO.inspect(ws2812messages_for_state(state, previous_step))
 
     {:noreply, ws2812messages_for_state(state, previous_step), state}
   end
@@ -130,6 +130,21 @@ defmodule BodyPack.OscToWs2812 do
       "random 1,16,16,RGB;",
       "brightness 1,#{state.brightness};",
       "render;"
+    ]
+  end
+
+  # Program 10 = Random Fade In/Out - Step < 64 = start
+  defp ws2812messages_for_state(%{program: 10, step: step}, _) when step < 64 do
+    [
+      "thread_start;",
+      "random_fade_in_out 1,0;",
+      "thread_stop;"
+    ]
+  end
+
+  defp ws2812messages_for_state(%{program: 10}, _) do
+    [
+      "kill_thread;",
     ]
   end
 

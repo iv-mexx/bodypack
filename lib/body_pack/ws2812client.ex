@@ -4,7 +4,7 @@ defmodule BodyPack.Ws2812Client do
 
   # @default_ws2812srv_ip '127.0.0.1'
   @default_ws2812srv_ip '192.168.1.149'
-  @default_ws2812srv_port 9999
+  @default_ws2812srv_port 9998
 
   @startup_sequence """
   reset;
@@ -40,6 +40,8 @@ defmodule BodyPack.Ws2812Client do
 
   def handle_events(messages, _from, socket) do
     message = Enum.join(messages, "")
+
+    IO.puts(message)
 
     :ok = :gen_tcp.send(socket, message)
 
