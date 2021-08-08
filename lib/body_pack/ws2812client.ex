@@ -41,14 +41,12 @@ defmodule BodyPack.Ws2812Client do
   def handle_events(messages, _from, socket) do
     message = Enum.join(messages, "")
 
-    IO.inspect(message)
-
     :ok = :gen_tcp.send(socket, message)
 
     {:noreply, [], socket}
   end
 
-  def handle_info({:tcp, port, msg}, socket) do
+  def handle_info({:tcp, _, _}, socket) do
     {:noreply, [], socket}
   end
 end
