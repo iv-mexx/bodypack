@@ -32,37 +32,37 @@ defmodule BodyPack.OscToWs2812 do
     |> String.pad_leading(2, "0")
   end
 
-  defp handle_osc_message({{"/docker/eyes/brightness", [osc_float: brightness]}}, state) do
+  defp handle_osc_message({{"/brightness", [osc_float: brightness]}}, state) do
     %DockerState{state | brightness: floor(brightness * @max_value)}
   end
 
-  defp handle_osc_message({{"/docker/eyes/red", [osc_float: red]}}, state) do
+  defp handle_osc_message({{"/red", [osc_float: red]}}, state) do
     %DockerState{state | red: floor(red * @max_value)}
   end
 
-  defp handle_osc_message({{"/docker/eyes/green", [osc_float: green]}}, state) do
+  defp handle_osc_message({{"/green", [osc_float: green]}}, state) do
     %DockerState{state | green: floor(green * @max_value)}
   end
 
-  defp handle_osc_message({{"/docker/eyes/blue", [osc_float: blue]}}, state) do
+  defp handle_osc_message({{"/blue", [osc_float: blue]}}, state) do
     %DockerState{state | blue: floor(blue * @max_value)}
   end
 
-  defp handle_osc_message({{"/docker/program", [osc_float: program]}}, state) do
+  defp handle_osc_message({{"/program", [osc_float: program]}}, state) do
     %DockerState{state | program: round(program * 127)}
   end
 
-  defp handle_osc_message({{"/docker/step", [osc_float: step]}}, state) do
+  defp handle_osc_message({{"/program/step", [osc_float: step]}}, state) do
     %DockerState{state | step: round(step * 127)}
   end
 
-  defp handle_osc_message({{"/global/bpm", [osc_float: bpm]}}, state) do
+  defp handle_osc_message({{"/bpm", [osc_float: bpm]}}, state) do
     %DockerState{state | bpm: floor(bpm * @max_value)}
   end
 
   defp handle_osc_message(_, state), do: state
 
-  defp ws2812messages_for_state(%{program: 0} = state, _) do
+  defp ws2812messages_for_state(%{program: 0, step: 0} = state, _) do
     [
       "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)};",
       "brightness 1,#{state.brightness};",
@@ -70,35 +70,18 @@ defmodule BodyPack.OscToWs2812 do
     ]
   end
 
-  # Program 1 = Rainbow BOTH
-  defp ws2812messages_for_state(%{program: 1, step: 0} = state, _) do
-    [
-      "rainbow 1,2;",
-      "brightness 1,#{state.brightness};",
-      "render;"
-    ]
-  end
-
+  # Program 1 with Step increasing = Rotate forward
   defp ws2812messages_for_state(%{program: 1, step: step}, previous_step) when step > previous_step do
     [
-      "rotate 1;",
+      "rotate 1,1,0;",
       "render;"
     ]
   end
 
-  # Program 2 = Rainbow LEFT
-  defp ws2812messages_for_state(%{program: 2, step: 0} = state, _) do
+  # Program 1 with Step decreasing = Rotate backwards
+  defp ws2812messages_for_state(%{program: 1, step: step}, previous_step) when step < previous_step do
     [
-      "fill 1,000000;",
-      "rainbow 1,2,0,255,1,16;",
-      "brightness 1,#{state.brightness};",
-      "render;"
-    ]
-  end
-
-  defp ws2812messages_for_state(%{program: 2, step: step}, previous_step) when step > previous_step do
-    [
-      "rotate 1;",
+      "rotate 1,1,1;",
       "render;"
     ]
   end
@@ -145,6 +128,55 @@ defmodule BodyPack.OscToWs2812 do
   defp ws2812messages_for_state(%{program: 10}, _) do
     [
       "kill_thread;",
+    ]
+  end
+
+  # Program 11 = Random Brightness BOTH
+  defp ws2812messages_for_state(%{program: 11, step: step}, previous_step) when step != previous_step do
+    [
+      "random 1,0,32,L;",
+      "render;"
+    ]
+  end
+
+  # Program 12 = Brightness Gradient
+  defp ws2812messages_for_state(%{program: 12, step: step} = state, _) when step < 64 do
+    [
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)};",
+      "brightness 1,#{state.brightness};",
+      "gradient 1,L,0,#{state.brightness},1,16;",
+      "gradient 1,L,0,#{state.brightness},16,16",
+      "render;"
+    ]
+  end
+
+
+  # Program 20 = Rainbow BOTH
+  defp ws2812messages_for_state(%{program: 20, step: 0} = state, _) do
+    [
+      "rainbow 1,2;",
+      "brightness 1,#{state.brightness};",
+      "render;"
+    ]
+  end
+
+  # Program 21 = Rainbow LEFT
+  defp ws2812messages_for_state(%{program: 21, step: 0} = state, _) do
+    [
+      "fill 1,000000;",
+      "rainbow 1,2,0,255,1,16;",
+      "brightness 1,#{state.brightness};",
+      "render;"
+    ]
+  end
+
+  # Program 22 = Rainbow RIGHT
+  defp ws2812messages_for_state(%{program: 22, step: 0} = state, _) do
+    [
+      "fill 1,000000;",
+      "rainbow 1,2,0,255,16,16;",
+      "brightness 1,#{state.brightness};",
+      "render;"
     ]
   end
 
