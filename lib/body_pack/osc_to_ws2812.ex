@@ -145,11 +145,36 @@ defmodule BodyPack.OscToWs2812 do
       "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)};",
       "brightness 1,#{state.brightness};",
       "gradient 1,L,0,#{state.brightness},1,16;",
-      "gradient 1,L,0,#{state.brightness},16,16",
+      "gradient 1,L,0,#{state.brightness},16,16;",
       "render;"
     ]
   end
 
+  # Program 13 = Gaps
+  defp ws2812messages_for_state(%{program: 13, step: step} = state, _) do
+    [
+      "brightness 1,#{state.brightness};",
+      "fill 1,000000,1,32;",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},0,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},8,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},16,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},24,#{step};",
+      "render;"
+    ]
+  end
+
+  # Program 14 = Gaps with Inverted Colors
+  defp ws2812messages_for_state(%{program: 14, step: step} = state, _) do
+    [
+      "brightness 1,#{state.brightness};",
+      "fill 1,000000,1,32;",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},0,#{step};",
+      "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},8,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},16,#{step};",
+      "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},24,#{step};",
+      "render;"
+    ]
+  end
 
   # Program 20 = Rainbow BOTH
   defp ws2812messages_for_state(%{program: 20, step: 0} = state, _) do
