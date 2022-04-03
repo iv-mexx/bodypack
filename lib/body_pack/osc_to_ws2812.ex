@@ -207,5 +207,18 @@ defmodule BodyPack.OscToWs2812 do
     ]
   end
 
+  # Program 23 = Brightness Gradient rotated by step
+  defp ws2812messages_for_state(%{program: 23, step: step} = state, previous_step) when step != previous_step do
+    [
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)};",
+      "brightness 1,#{state.brightness};",
+      "gradient 1,L,0,#{state.brightness},1,16;",
+      "gradient 1,L,0,#{state.brightness},16,16;",
+      "rotate 1,#{rem(step, 16)},1;",
+      "render;"
+    ]
+  end
+
+
   defp ws2812messages_for_state(_, _), do: []
 end
