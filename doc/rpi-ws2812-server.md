@@ -21,7 +21,7 @@ Once the server is running in `tcp`-mode, you can use [netcat](https://de.wikipe
 
 ## Example
 
-* `setup 1,16,3`
+* `setup 1,32,3`
 * `init`
 * `fill 1,ff0000`
 * `render`

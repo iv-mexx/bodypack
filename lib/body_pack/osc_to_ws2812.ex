@@ -71,17 +71,19 @@ defmodule BodyPack.OscToWs2812 do
   end
 
   # Program 1 with Step increasing = Rotate forward
-  defp ws2812messages_for_state(%{program: 1, step: step}, previous_step) when step > previous_step do
+  defp ws2812messages_for_state(%{program: 1, step: step} = state, previous_step) when step > previous_step do
     [
       "rotate 1,1,0;",
+      "brightness 1,#{state.brightness};",
       "render;"
     ]
   end
 
   # Program 1 with Step decreasing = Rotate backwards
-  defp ws2812messages_for_state(%{program: 1, step: step}, previous_step) when step < previous_step do
+  defp ws2812messages_for_state(%{program: 1, step: step} = state, previous_step) when step < previous_step do
     [
       "rotate 1,1,1;",
+      "brightness 1,#{state.brightness};",
       "render;"
     ]
   end
