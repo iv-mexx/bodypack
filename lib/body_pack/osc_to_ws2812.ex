@@ -69,7 +69,6 @@ defmodule BodyPack.OscToWs2812 do
   defp ws2812messages_for_state(%{reset: reset}, %{reset: previous_reset})
        when previous_reset < 125 and reset >= 125 do
     [
-      "kill_thread",
       "reset;",
       "setup 1,32,3;",
       "init;"
