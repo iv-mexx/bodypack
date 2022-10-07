@@ -1,5 +1,5 @@
 defmodule DockerState do
-  defstruct brightness: 0, red: 0, green: 0, blue: 0, bpm: 0, program: 0, step: 0
+  defstruct brightness: 0, red: 0, green: 0, blue: 0, bpm: 0, program: 0, step: 0, reset: 0
 end
 
 defmodule BodyPack.OscToWs2812 do
@@ -17,13 +17,13 @@ defmodule BodyPack.OscToWs2812 do
   end
 
   def handle_events(events, _from, state) do
-    previous_step = state.step
+    previous_state = state
     state = Enum.reduce(events, state, fn event, acc -> handle_osc_message(event, acc) end)
 
     # IO.inspect(state)
-    # IO.inspect(ws2812messages_for_state(state, previous_step))
+    IO.inspect(ws2812messages_for_state(state, previous_state))
 
-    {:noreply, ws2812messages_for_state(state, previous_step), state}
+    {:noreply, ws2812messages_for_state(state, previous_state), state}
   end
 
   defp format_color(color) do
@@ -60,7 +60,20 @@ defmodule BodyPack.OscToWs2812 do
     %DockerState{state | bpm: floor(bpm * @max_value)}
   end
 
+  defp handle_osc_message({{"/reset", [osc_float: reset]}}, state) do
+    %DockerState{state | reset: floor(reset * @max_value)}
+  end
+
   defp handle_osc_message(_, state), do: state
+
+  defp ws2812messages_for_state(%{reset: reset}, %{reset: previous_reset})
+       when previous_reset < 125 and reset >= 125 do
+    [
+      "reset;",
+      "setup 1,32,3;",
+      "init;"
+    ]
+  end
 
   defp ws2812messages_for_state(%{program: 0, step: 0} = state, _) do
     [
@@ -71,7 +84,8 @@ defmodule BodyPack.OscToWs2812 do
   end
 
   # Program 1 with Step increasing = Rotate forward
-  defp ws2812messages_for_state(%{program: 1, step: step} = state, previous_step) when step > previous_step do
+  defp ws2812messages_for_state(%{program: 1, step: step} = state, %{step: previous_step})
+       when step > previous_step do
     [
       "rotate 1,1,0;",
       "brightness 1,#{state.brightness};",
@@ -80,7 +94,8 @@ defmodule BodyPack.OscToWs2812 do
   end
 
   # Program 1 with Step decreasing = Rotate backwards
-  defp ws2812messages_for_state(%{program: 1, step: step} = state, previous_step) when step < previous_step do
+  defp ws2812messages_for_state(%{program: 1, step: step} = state, %{step: previous_step})
+       when step < previous_step do
     [
       "rotate 1,1,1;",
       "brightness 1,#{state.brightness};",
@@ -89,7 +104,8 @@ defmodule BodyPack.OscToWs2812 do
   end
 
   # Program 3 = Random BOTH
-  defp ws2812messages_for_state(%{program: 3, step: step} = state, previous_step) when step != previous_step do
+  defp ws2812messages_for_state(%{program: 3, step: step} = state, %{step: previous_step})
+       when step != previous_step do
     [
       "fill 1,000000;",
       "random 1,0,32,RGB;",
@@ -99,7 +115,8 @@ defmodule BodyPack.OscToWs2812 do
   end
 
   # Program 4 = Random LEFT
-  defp ws2812messages_for_state(%{program: 4, step: step} = state, previous_step) when step != previous_step do
+  defp ws2812messages_for_state(%{program: 4, step: step} = state, %{step: previous_step})
+       when step != previous_step do
     [
       "fill 1,000000;",
       "random 1,0,16,RGB;",
@@ -109,7 +126,8 @@ defmodule BodyPack.OscToWs2812 do
   end
 
   # Program 5 = Random RIGHT
-  defp ws2812messages_for_state(%{program: 5, step: step} = state, previous_step) when step != previous_step do
+  defp ws2812messages_for_state(%{program: 5, step: step} = state, %{step: previous_step})
+       when step != previous_step do
     [
       "fill 1,000000;",
       "random 1,16,16,RGB;",
@@ -129,12 +147,13 @@ defmodule BodyPack.OscToWs2812 do
 
   defp ws2812messages_for_state(%{program: 10}, _) do
     [
-      "kill_thread;",
+      "kill_thread;"
     ]
   end
 
   # Program 11 = Random Brightness BOTH
-  defp ws2812messages_for_state(%{program: 11, step: step}, previous_step) when step != previous_step do
+  defp ws2812messages_for_state(%{program: 11, step: step}, %{step: previous_step})
+       when step != previous_step do
     [
       "random 1,0,32,L;",
       "render;"
@@ -208,7 +227,8 @@ defmodule BodyPack.OscToWs2812 do
   end
 
   # Program 23 = Brightness Gradient rotated by step
-  defp ws2812messages_for_state(%{program: 23, step: step} = state, previous_step) when step != previous_step do
+  defp ws2812messages_for_state(%{program: 23, step: step} = state, %{step: previous_step})
+       when step != previous_step do
     [
       "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)};",
       "brightness 1,#{state.brightness};",
@@ -218,7 +238,6 @@ defmodule BodyPack.OscToWs2812 do
       "render;"
     ]
   end
-
 
   defp ws2812messages_for_state(_, _), do: []
 end
