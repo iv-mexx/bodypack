@@ -21,7 +21,7 @@ defmodule BodyPack.OscToWs2812 do
     state = Enum.reduce(events, state, fn event, acc -> handle_osc_message(event, acc) end)
 
     # IO.inspect(state)
-    IO.inspect(ws2812messages_for_state(state, previous_state))
+    # IO.inspect(ws2812messages_for_state(state, previous_state))
 
     {:noreply, ws2812messages_for_state(state, previous_state), state}
   end

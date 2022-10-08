@@ -11,6 +11,13 @@
   * If the install fails because the service is not running, open `makefile` and remove the line `systemctl stop ws2812svr.service` in `install`
   * For use with the Elixir OSC Server, we're going to use the `tcp` mode (default) with port `9999` (default)
 
+## RPI Tuning
+
+* Disable IPV6
+  * It seems like IPV6 might cause problems 
+  * https://github.com/tom-2015/rpi-ws2812-server/issues/25
+  * https://www.howtoraspberry.com/2020/04/disable-ipv6-on-raspberry-pi/
+
 ## Configuration
 
 * The NeoPixel RGB Rings are GRB, so `led_type=3` 

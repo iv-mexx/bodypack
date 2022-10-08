@@ -3,7 +3,7 @@ defmodule BodyPack.Ws2812Client do
   require Logger
 
   @default_ws2812srv_ip '127.0.0.1'
-  # @default_ws2812srv_ip '192.168.1.149'
+  # @default_ws2812srv_ip '192.168.1.133'
   @default_ws2812srv_port 9999
 
   @startup_sequence """
