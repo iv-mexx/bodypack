@@ -139,7 +139,7 @@ defmodule BodyPack.OscToWs2812 do
   # Program 10 = Random Fade In/Out - Step < 64 = start
   defp ws2812messages_for_state(%{program: 10, step: step}, _) when step < 64 do
     [
-      "thread_start;",
+      "thread_start 1 0;",
       "random_fade_in_out 1,0;",
       "thread_stop;"
     ]
