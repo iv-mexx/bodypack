@@ -136,20 +136,27 @@ defmodule BodyPack.OscToWs2812 do
     ]
   end
 
-  # Program 10 = Random Fade In/Out - Step < 64 = start
-  defp ws2812messages_for_state(%{program: 10, step: step}, _) when step < 64 do
+  defp ws2812messages_for_state(%{program: 10, step: step}, %{step: previous_step})
+       when step != previous_step do
     [
-      "thread_start 1 0;",
-      "random_fade_in_out 1,0;",
-      "thread_stop;"
+      "random_fade_in_out 1,0;"
     ]
   end
 
-  defp ws2812messages_for_state(%{program: 10}, _) do
-    [
-      "kill_thread;"
-    ]
-  end
+  # Program 10 = Random Fade In/Out - Step < 64 = start
+  # defp ws2812messages_for_state(%{program: 10, step: step}, _) when step < 64 do
+  #   [
+  #     "thread_start 1 0;",
+  #     "random_fade_in_out 1,0;",
+  #     "thread_stop;"
+  #   ]
+  # end
+
+  # defp ws2812messages_for_state(%{program: 10}, _) do
+  #   [
+  #     "kill_thread;"
+  #   ]
+  # end
 
   # Program 11 = Random Brightness BOTH
   defp ws2812messages_for_state(%{program: 11, step: step}, %{step: previous_step})
