@@ -1,5 +1,12 @@
 defmodule DockerState do
-  defstruct brightness: 0, red: 0, green: 0, blue: 0, bpm: 0, program: 0, step: 0, reset: 0
+  defstruct brightness: 0,
+            red: 0,
+            green: 0,
+            blue: 0,
+            bpm: 0,
+            program: 0,
+            step: 0,
+            reset: 0
 end
 
 defmodule BodyPack.OscToWs2812 do
@@ -75,6 +82,23 @@ defmodule BodyPack.OscToWs2812 do
     ]
   end
 
+  # Switch to program 10 - start random fade thread
+  defp ws2812messages_for_state(%{program: 10}, %{program: previous_program})
+       when previous_program != 10 do
+    [
+      "thread_start;",
+      "random_fade_in_out 1,0;",
+      "thread_stop;"
+    ]
+  end
+
+  # Switch away from program 10 - stop thread
+  defp ws2812messages_for_state(%{program: program}, %{program: 10}) when program != 10 do
+    [
+      "kill_thread;"
+    ]
+  end
+
   defp ws2812messages_for_state(%{program: 0, step: 0} = state, _) do
     [
       "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)};",
@@ -133,21 +157,6 @@ defmodule BodyPack.OscToWs2812 do
       "random 1,16,16,RGB;",
       "brightness 1,#{state.brightness};",
       "render;"
-    ]
-  end
-
-  # Program 10 = Random Fade In/Out - Step < 64 = start
-  defp ws2812messages_for_state(%{program: 10, step: step}, _) when step < 64 do
-    [
-      "thread_start 1 0;",
-      "random_fade_in_out 1,0;",
-      "thread_stop;"
-    ]
-  end
-
-  defp ws2812messages_for_state(%{program: 10}, _) do
-    [
-      "kill_thread 1;"
     ]
   end
 
