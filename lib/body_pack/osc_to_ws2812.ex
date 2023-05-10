@@ -248,5 +248,20 @@ defmodule BodyPack.OscToWs2812 do
     ]
   end
 
+  # Program 24 = Strobe (with increasing step)
+  defp ws2812messages_for_state(%{program: 24, step: step} = state, _) when rem(step, 2) == 0 do
+    [
+      "brightness 1,#{state.brightness};",
+      "render;"
+    ]
+  end
+
+  defp ws2812messages_for_state(%{program: 24}, _) do
+    [
+      "brightness 1,0;",
+      "render;"
+    ]
+  end
+
   defp ws2812messages_for_state(_, _), do: []
 end
