@@ -2,7 +2,7 @@ defmodule BodyPack.Ws2812Client do
   use GenStage
   require Logger
 
-  @default_ws2812srv_ip ~c"192.168.1.150"
+  @default_ws2812srv_ip ~c"127.0.0.1"
   # @default_ws2812srv_ip '192.168.1.133'
   @default_ws2812srv_port 9999
 
