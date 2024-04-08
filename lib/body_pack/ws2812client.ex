@@ -2,13 +2,13 @@ defmodule BodyPack.Ws2812Client do
   use GenStage
   require Logger
 
-  @default_ws2812srv_ip '127.0.0.1'
+  @default_ws2812srv_ip ~c"192.168.1.150"
   # @default_ws2812srv_ip '192.168.1.133'
   @default_ws2812srv_port 9999
 
   @startup_sequence """
   reset;
-  setup 1,32,3;
+  setup 1,209,3;
   init;
   brightness 1,15;
   do; fill 1,0000ff; render; delay 25; fill 1,000000; render; delay 150; loop 5;
@@ -40,6 +40,8 @@ defmodule BodyPack.Ws2812Client do
 
   def handle_events(messages, _from, socket) do
     message = Enum.join(messages, "")
+
+    # IO.inspect(message)
 
     :ok = :gen_tcp.send(socket, message)
 

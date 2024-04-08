@@ -77,7 +77,7 @@ defmodule BodyPack.OscToWs2812 do
        when previous_reset < 125 and reset >= 125 do
     [
       "reset;",
-      "setup 1,32,3;",
+      "setup 1,209,3;",
       "init;"
     ]
   end
@@ -132,7 +132,7 @@ defmodule BodyPack.OscToWs2812 do
        when step != previous_step do
     [
       "fill 1,000000;",
-      "random 1,0,32,RGB;",
+      "random 1,0,209,RGB;",
       "brightness 1,#{state.brightness};",
       "render;"
     ]
@@ -164,7 +164,7 @@ defmodule BodyPack.OscToWs2812 do
   defp ws2812messages_for_state(%{program: 11, step: step}, %{step: previous_step})
        when step != previous_step do
     [
-      "random 1,0,32,L;",
+      "random 1,0,209,L;",
       "render;"
     ]
   end
@@ -174,8 +174,7 @@ defmodule BodyPack.OscToWs2812 do
     [
       "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)};",
       "brightness 1,#{state.brightness};",
-      "gradient 1,L,0,#{state.brightness},1,16;",
-      "gradient 1,L,0,#{state.brightness},16,16;",
+      "gradient 1,L,0,#{state.brightness},0,209;",
       "render;"
     ]
   end
@@ -184,11 +183,33 @@ defmodule BodyPack.OscToWs2812 do
   defp ws2812messages_for_state(%{program: 13, step: step} = state, _) do
     [
       "brightness 1,#{state.brightness};",
-      "fill 1,000000,1,32;",
+      "fill 1,000000,1,209;",
       "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},0,#{step};",
       "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},8,#{step};",
       "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},16,#{step};",
       "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},24,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},32,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},40,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},48,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},56,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},64,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},72,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},80,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},88,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},96,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},104,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},112,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},120,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},128,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},136,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},144,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},152,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},160,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},168,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},176,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},184,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},192,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},200,#{step};",
       "render;"
     ]
   end
@@ -197,11 +218,33 @@ defmodule BodyPack.OscToWs2812 do
   defp ws2812messages_for_state(%{program: 14, step: step} = state, _) do
     [
       "brightness 1,#{state.brightness};",
-      "fill 1,000000,1,32;",
+      "fill 1,000000,1,209;",
       "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},0,#{step};",
       "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},8,#{step};",
       "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},16,#{step};",
       "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},24,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},32,#{step};",
+      "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},40,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},48,#{step};",
+      "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},56,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},64,#{step};",
+      "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},72,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},80,#{step};",
+      "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},88,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},96,#{step};",
+      "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},104,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},112,#{step};",
+      "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},120,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},128,#{step};",
+      "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},136,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},144,#{step};",
+      "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},152,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},160,#{step};",
+      "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},168,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},176,#{step};",
+      "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},184,#{step};",
+      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},192,#{step};",
+      "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},200,#{step};",
       "render;"
     ]
   end
@@ -238,12 +281,17 @@ defmodule BodyPack.OscToWs2812 do
   # Program 23 = Brightness Gradient rotated by step
   defp ws2812messages_for_state(%{program: 23, step: step} = state, %{step: previous_step})
        when step != previous_step do
+    progress = step / 127.0
+
     [
       "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)};",
-      "brightness 1,#{state.brightness};",
-      "gradient 1,L,0,#{state.brightness},1,16;",
-      "gradient 1,L,0,#{state.brightness},16,16;",
-      "rotate 1,#{rem(step, 16)},1;",
+      "brightness 1,0;",
+      "brightness 1,#{state.brightness},189,20;",
+      "brightness 1,#{state.brightness * (2.0 * max(0.0, progress - 0.5))},149,40;",
+      "gradient 1,L,0,#{state.brightness},#{46 - progress * 46},#{progress * 46};",
+      "gradient 1,L,#{state.brightness},0,104,#{progress * 45};",
+      "gradient 1,L,#{state.brightness},0,46,#{progress * 32};",
+      "gradient 1,L,0,#{state.brightness},#{104 - progress * 26},#{progress * 26};",
       "render;"
     ]
   end
