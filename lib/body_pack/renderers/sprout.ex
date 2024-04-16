@@ -1,4 +1,15 @@
 defmodule BodyPack.Renderers.Sprout do
+  @segment_1 "0,46"
+  @segment_2 "46,32"
+  @segment_3 "78,26"
+  @segment_4 "104,45"
+  @segment_5 "149,40"
+  @segment_6 "189,20"
+
+  defp format_color(%{red: red, green: green, blue: blue}) do
+    "#{format_color(red)}#{format_color(green)}#{format_color(blue)}"
+  end
+
   defp format_color(color) do
     color
     |> Integer.to_string(16)
@@ -11,6 +22,23 @@ defmodule BodyPack.Renderers.Sprout do
       "reset;",
       "setup 1,209,3;",
       "init;"
+    ]
+  end
+
+  # Switch to program 9 - Chaser
+  def ws2812messages_for_state(%{program: 9, step: step} = state, %{program: previous_program})
+      when previous_program != 9 do
+    [
+      "thread_start;",
+      "chaser 1,0,#{format_color(state)},#{step};",
+      "thread_stop;"
+    ]
+  end
+
+  # Switch away from program 9 - stop thread
+  def ws2812messages_for_state(%{program: program}, %{program: 9}) when program != 9 do
+    [
+      "kill_thread;"
     ]
   end
 
@@ -33,7 +61,7 @@ defmodule BodyPack.Renderers.Sprout do
 
   def ws2812messages_for_state(%{program: 0, step: 0} = state, _) do
     [
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)};",
+      "fill 1,#{format_color(state)};",
       "brightness 1,#{state.brightness};",
       "render;"
     ]
@@ -104,7 +132,7 @@ defmodule BodyPack.Renderers.Sprout do
   # Program 12 = Brightness Gradient
   def ws2812messages_for_state(%{program: 12, step: step} = state, _) when step < 64 do
     [
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)};",
+      "fill 1,#{format_color(state)};",
       "brightness 1,#{state.brightness};",
       "gradient 1,L,0,#{state.brightness},0,209;",
       "render;"
@@ -116,32 +144,32 @@ defmodule BodyPack.Renderers.Sprout do
     [
       "brightness 1,#{state.brightness};",
       "fill 1,000000,1,209;",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},0,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},8,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},16,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},24,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},32,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},40,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},48,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},56,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},64,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},72,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},80,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},88,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},96,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},104,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},112,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},120,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},128,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},136,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},144,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},152,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},160,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},168,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},176,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},184,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},192,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},200,#{step};",
+      "fill 1,#{format_color(state)},0,#{step};",
+      "fill 1,#{format_color(state)},8,#{step};",
+      "fill 1,#{format_color(state)},16,#{step};",
+      "fill 1,#{format_color(state)},24,#{step};",
+      "fill 1,#{format_color(state)},32,#{step};",
+      "fill 1,#{format_color(state)},40,#{step};",
+      "fill 1,#{format_color(state)},48,#{step};",
+      "fill 1,#{format_color(state)},56,#{step};",
+      "fill 1,#{format_color(state)},64,#{step};",
+      "fill 1,#{format_color(state)},72,#{step};",
+      "fill 1,#{format_color(state)},80,#{step};",
+      "fill 1,#{format_color(state)},88,#{step};",
+      "fill 1,#{format_color(state)},96,#{step};",
+      "fill 1,#{format_color(state)},104,#{step};",
+      "fill 1,#{format_color(state)},112,#{step};",
+      "fill 1,#{format_color(state)},120,#{step};",
+      "fill 1,#{format_color(state)},128,#{step};",
+      "fill 1,#{format_color(state)},136,#{step};",
+      "fill 1,#{format_color(state)},144,#{step};",
+      "fill 1,#{format_color(state)},152,#{step};",
+      "fill 1,#{format_color(state)},160,#{step};",
+      "fill 1,#{format_color(state)},168,#{step};",
+      "fill 1,#{format_color(state)},176,#{step};",
+      "fill 1,#{format_color(state)},184,#{step};",
+      "fill 1,#{format_color(state)},192,#{step};",
+      "fill 1,#{format_color(state)},200,#{step};",
       "render;"
     ]
   end
@@ -151,32 +179,48 @@ defmodule BodyPack.Renderers.Sprout do
     [
       "brightness 1,#{state.brightness};",
       "fill 1,000000,1,209;",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},0,#{step};",
+      "fill 1,#{format_color(state)},0,#{step};",
       "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},8,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},16,#{step};",
+      "fill 1,#{format_color(state)},16,#{step};",
       "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},24,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},32,#{step};",
+      "fill 1,#{format_color(state)},32,#{step};",
       "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},40,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},48,#{step};",
+      "fill 1,#{format_color(state)},48,#{step};",
       "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},56,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},64,#{step};",
+      "fill 1,#{format_color(state)},64,#{step};",
       "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},72,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},80,#{step};",
+      "fill 1,#{format_color(state)},80,#{step};",
       "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},88,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},96,#{step};",
+      "fill 1,#{format_color(state)},96,#{step};",
       "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},104,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},112,#{step};",
+      "fill 1,#{format_color(state)},112,#{step};",
       "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},120,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},128,#{step};",
+      "fill 1,#{format_color(state)},128,#{step};",
       "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},136,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},144,#{step};",
+      "fill 1,#{format_color(state)},144,#{step};",
       "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},152,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},160,#{step};",
+      "fill 1,#{format_color(state)},160,#{step};",
       "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},168,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},176,#{step};",
+      "fill 1,#{format_color(state)},176,#{step};",
       "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},184,#{step};",
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)},192,#{step};",
+      "fill 1,#{format_color(state)},192,#{step};",
       "fill 1,#{format_color(255 - state.red)}#{format_color(255 - state.green)}#{format_color(255 - state.blue)},200,#{step};",
+      "render;"
+    ]
+  end
+
+  # Program 15 = Segments
+  def ws2812messages_for_state(%{program: 15, step: step} = state, _) do
+    segment = rem(step, 6)
+
+    [
+      "brightness 1,#{state.brightness};",
+      "fill 1,#{if segment == 0, do: format_color(state), else: "000000"},#{@segment_1};",
+      "fill 1,#{if segment == 1, do: format_color(state), else: "000000"},#{@segment_2};",
+      "fill 1,#{if segment == 2, do: format_color(state), else: "000000"},#{@segment_3};",
+      "fill 1,#{if segment == 3, do: format_color(state), else: "000000"},#{@segment_4};",
+      "fill 1,#{if segment == 4, do: format_color(state), else: "000000"},#{@segment_5};",
+      "fill 1,#{if segment == 5, do: format_color(state), else: "000000"},#{@segment_6};",
       "render;"
     ]
   end
@@ -216,7 +260,7 @@ defmodule BodyPack.Renderers.Sprout do
     progress = step / 127.0
 
     [
-      "fill 1,#{format_color(state.red)}#{format_color(state.green)}#{format_color(state.blue)};",
+      "fill 1,#{format_color(state)};",
       "brightness 1,0;",
       "brightness 1,#{state.brightness},189,20;",
       "brightness 1,#{state.brightness * (2.0 * max(0.0, progress - 0.5))},149,40;",

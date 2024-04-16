@@ -3,7 +3,7 @@ defmodule BodyPack.Ws2812Client do
   require Logger
 
   # @default_ws2812srv_ip ~c"127.0.0.1"
-  @default_ws2812srv_ip ~c"192.168.1.150"
+  @default_ws2812srv_ip ~c"192.168.1.217"
   @default_ws2812srv_port 9999
 
   @startup_sequence """
@@ -39,6 +39,7 @@ defmodule BodyPack.Ws2812Client do
   end
 
   def handle_events(messages, _from, socket) do
+    # IO.inspect(messages)
     message = Enum.join(messages, "")
 
     :ok = :gen_tcp.send(socket, message)
