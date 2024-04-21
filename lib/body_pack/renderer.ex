@@ -20,7 +20,8 @@ defmodule BodyPack.Renderer do
     # Get current State
     new_state = GenStage.call(BodyPack.OscToWs2812, :get_state, trunc(1000 / @fps))
     # Generate Render-Messages based on new and old state
-    messages = BodyPack.Renderers.Sprout.ws2812messages_for_state(new_state, old_state)
+    render_module = Application.fetch_env!(:bodypack, :renderer)
+    messages = render_module.ws2812messages_for_state(new_state, old_state)
     # Push render messages
     GenServer.cast(__MODULE__, {:add, messages})
 
