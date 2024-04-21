@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+rm -rf _build/prod
+
 # exit on error
 set -o errexit
 
@@ -19,3 +21,5 @@ MIX_ENV=docker mix release --overwrite
 # Perform any migrations necessary 
 # (No migrations currently)
 # _build/prod/rel/myApp/bin/myApp eval "MyApp.Release.migrate"
+
+mv _build/docker _build/prod
