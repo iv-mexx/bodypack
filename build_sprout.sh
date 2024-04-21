@@ -5,7 +5,7 @@ set -o errexit
 
 # Initial setup
 mix deps.get --only prod
-MIX_ENV=prod mix compile
+MIX_ENV=sprout mix compile
 
 # Compile assets
 # (No assets currently)
