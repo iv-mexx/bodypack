@@ -14,7 +14,7 @@ MIX_ENV=prod mix compile
 # mix phx.digest
 
 # Build the release and overwrite the existing release directory
-MIX_ENV=prod mix release --overwrite
+MIX_ENV=sprout mix release --overwrite
 
 # Perform any migrations necessary 
 # (No migrations currently)
