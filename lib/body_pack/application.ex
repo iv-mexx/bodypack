@@ -10,6 +10,7 @@ defmodule BodyPack.Application do
     children = [
       # {BodyPack.Listener, args},
       {BodyPack.OscToWs2812, args},
+      {BodyPack.Renderer, args},
       {BodyPack.Ws2812Client, args}
     ]
 
